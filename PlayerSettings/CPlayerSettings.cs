@@ -10,11 +10,13 @@ namespace PlayerSettings
     internal class CPlayerSettings
     {
         private int userid;
-        private static Dictionary<string, string> cached_values;                
+        private CCSPlayerController player;
+        private Dictionary<string, string> cached_values;                
 
-        public CPlayerSettings(int _userid)
+        public CPlayerSettings(CCSPlayerController _player)
         {
-            userid = _userid;
+            player = _player;
+            userid = Storage.GetUserId(player);
             cached_values = new Dictionary<string, string>();
         }
 
@@ -39,6 +41,19 @@ namespace PlayerSettings
         public int UserId()
         {
             return userid;
+        }
+
+        public bool EqualPlayer(CCSPlayerController _player)
+        {
+            return (player == _player);
+        }
+
+        internal void ParseLoadedSettings(List<List<string>> rows)
+        {
+            foreach (var row in rows)
+            {
+                cached_values[row[0]] = row[1];
+            }
         }
 
 
