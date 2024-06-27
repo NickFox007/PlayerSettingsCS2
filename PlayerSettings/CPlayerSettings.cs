@@ -16,7 +16,7 @@ namespace PlayerSettings
         public CPlayerSettings(CCSPlayerController _player)
         {
             player = _player;
-            userid = Storage.GetUserId(player);
+            Storage.GetUserIdAsync(player, (userid) => this.userid = userid);
             cached_values = new Dictionary<string, string>();
         }
 
@@ -45,7 +45,7 @@ namespace PlayerSettings
 
         public bool EqualPlayer(CCSPlayerController _player)
         {
-            return (player == _player);
+            return player == _player;
         }
 
         internal void ParseLoadedSettings(List<List<string>> rows)

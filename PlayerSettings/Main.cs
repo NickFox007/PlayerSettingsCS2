@@ -12,7 +12,7 @@ namespace PlayerSettings;
 public class PlayerSettingsCore : BasePlugin
 {
     public override string ModuleName => "PlayerSettings [Core]";
-    public override string ModuleVersion => "0.4";
+    public override string ModuleVersion => "0.5";
     public override string ModuleAuthor => "Nick Fox";
     public override string ModuleDescription => "One storage for player's settings (aka ClientCookies)";
 

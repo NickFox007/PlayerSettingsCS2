@@ -24,7 +24,7 @@ namespace PlayerSettings
             db.QueryAsync("create table if not exists \"settings_users\" (\"id\" integer primary key AUTOINCREMENT, \"steam\" varchar(255) not null)", null, null, true);
             db.QueryAsync("create table if not exists \"settings_values\" (\"user_id\" int, \"param\" varchar(255) not null, \"value\" varchar(255) not null)", null, null, true);
         }
-
+        /*
         public static int GetUserId(CCSPlayerController player)
         {
             var steamid = player.SteamID;
@@ -35,6 +35,21 @@ namespace PlayerSettings
                 res = db.Query("select \"id\" from \"settings_users\" where \"steam\" = \"{ARG}\"", new List<string>([steamid.ToString()]));
             }
             return int.Parse(res[0][0]);
+        }*/
+
+        public static void GetUserIdAsync(CCSPlayerController player, Action<int> callback)
+        {
+            var steamid = player.SteamID;
+            db.QueryAsync("select \"id\" from \"settings_users\" where \"steam\" = \"{ARG}\"", new List<string>([steamid.ToString()]), (data) => {
+                if (data.Count > 0)
+                {
+                    callback(int.Parse(data[0][0]));
+                }
+                else
+                    db.QueryAsync("insert into \"settings_users\" (\"steam\") values (\"{ARG}\")", new List<string>([steamid.ToString()]), (data) => GetUserIdAsync(player, callback), true);
+            });
+            
+            
         }
 
         internal static void LoadSettings(int userid, Action<List<List<string>>> action)
