@@ -27,6 +27,11 @@ public class PlayerSettingsCore : BasePlugin
         RegisterListener<Listeners.OnClientAuthorized>(OnClientAuthorized);               
     }
 
+    public override void Unload(bool hotReload)
+    {
+        Storage.Close();
+    }
+
     private void OnClientAuthorized(int slot, SteamID steamID)
     {
         ((SettingsApi)_api).LoadOnConnect(Utilities.GetPlayerFromSlot(slot));
