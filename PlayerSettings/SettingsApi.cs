@@ -11,10 +11,21 @@ namespace PlayerSettings
     
     internal class SettingsApi : ISettingsApi
     {
-        CPlayerSettings[] settings;
+        private CPlayerSettings[] settings;
+        internal List<Action<CCSPlayerController>> actions;
         public SettingsApi()
         {
             settings = Array.Empty<CPlayerSettings>();
+        }
+
+        public void AddHook(Action<CCSPlayerController> action)
+        {
+            actions.Add(action);
+        }
+
+        public void RemHook(Action<CCSPlayerController> action)
+        {
+            actions.RemoveAll(x => x == action);
         }
 
         private CPlayerSettings FindUser(CCSPlayerController player)
@@ -54,7 +65,7 @@ namespace PlayerSettings
         {
             var user = FindUser(player);
 
-            Storage.LoadSettings(user.UserId(), user.ParseLoadedSettings);
+            Storage.LoadSettings(user.UserId(), (vars) => user.ParseLoadedSettings(vars, actions));
         }
 
     }

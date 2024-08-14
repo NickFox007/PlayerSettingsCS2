@@ -75,6 +75,11 @@ namespace PlayerSettings
             db.QueryAsync("update \"settings_values\" set \"value\" = \"{ARG}\" where \"user_id\" = {ARG} and \"param\" = \"{ARG}\"", new List<string>([value, userid.ToString(), param]), null, true);
         }
 
+        public static void Close()
+        {
+            db.Close();
+        }
+
         
 
 

@@ -11,5 +11,7 @@ namespace PlayerSettings
     {
         public string GetPlayerSettingsValue(CCSPlayerController player, string param, string default_value);
         public void SetPlayerSettingsValue(CCSPlayerController player, string param, string value);
+        public void AddHook(Action<CCSPlayerController> action);
+        public void RemHook(Action<CCSPlayerController> action);
     }
 }

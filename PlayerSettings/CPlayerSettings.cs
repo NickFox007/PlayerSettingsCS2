@@ -1,4 +1,5 @@
-﻿using CounterStrikeSharp.API.Core;
+﻿using CounterStrikeSharp.API;
+using CounterStrikeSharp.API.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,14 +49,15 @@ namespace PlayerSettings
             return player == _player;
         }
 
-        internal void ParseLoadedSettings(List<List<string>> rows)
+        internal void ParseLoadedSettings(List<List<string>> rows, List<Action<CCSPlayerController>> actions)
         {
             foreach (var row in rows)
             {
                 cached_values[row[0]] = row[1];
             }
+            foreach (var action in actions)
+                Server.NextFrameAsync(() => action(player));
         }
-
 
     }
 }
