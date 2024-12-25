@@ -12,7 +12,7 @@ namespace PlayerSettings
     internal class SettingsApi : ISettingsApi
     {
         private CPlayerSettings[] settings;
-        internal List<Action<CCSPlayerController>> actions;
+        internal List<Action<CCSPlayerController>> actions = new List<Action<CCSPlayerController>>();
         public SettingsApi()
         {
             settings = Array.Empty<CPlayerSettings>();
@@ -37,7 +37,8 @@ namespace PlayerSettings
                     //Console.WriteLine($"Returned found: {item.UserId()}");
                     return item;
                 }
-            }            
+            }
+            
             var newInst = new CPlayerSettings(player);
             AddPlayerInst(newInst);
             return newInst;
@@ -68,5 +69,25 @@ namespace PlayerSettings
             Storage.LoadSettings(user.UserId(), (vars) => user.ParseLoadedSettings(vars, actions));
         }
 
+        public void RegisterTogglableSetting(string name, string viewName)
+        {
+            SettingItems.AddTogglable(name, viewName);
+        }
+
+        public void RegisterSelectingSetting(string name, string viewName, List<string> values)
+        {
+            SettingItems.AddSelecting(name, viewName, values);
+        }
+
+        public List<SettingItem> GetSettingItems()
+        {
+            var list = new List<SettingItem>();
+            foreach (var item in SettingItems.Items)
+                list.Add(item);
+            return list;
+        }
+
     }
+
+    
 }

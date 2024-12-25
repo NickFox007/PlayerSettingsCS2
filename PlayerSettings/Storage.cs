@@ -80,7 +80,7 @@ namespace PlayerSettings
             var res = db.Query("SELECT `value` FROM `settings_values` WHERE `user_id` = {ARG} AND `param` = '{ARG}'", new List<string>([userid.ToString(), param]));
             if (res.Count == 0)
             {
-                db.Query("INSERT INTO `settings_values` (`user_id`, `param`, `value`) VALUES ({ARG},'{ARG}', '{ARG}')", new List<string>([userid.ToString(), param, default_value]), true);
+                db.Query("INSERT INTO `settings_values` (`user_id`, `param`, `value`) VALUES ({ARG}, '{ARG}', '{ARG}')", new List<string>([userid.ToString(), param, default_value]), true);
                 return default_value;
             }
             return res[0][0];
@@ -88,7 +88,15 @@ namespace PlayerSettings
 
         public static void SetUserSettingValue(int userid, string param, string value)
         {
-            db.QueryAsync("UPDATE `settings_values` SET `value` = '{ARG}' WHERE `user_id` = {ARG} AND `param` = '{ARG}'", new List<string>([value, userid.ToString(), param]), null, true);
+            db.QueryAsync("SELECT `value` FROM `settings_values` WHERE `user_id` = {ARG} AND `param` = '{ARG}'", new List<string>([userid.ToString(), param]), (data) => SetUserSettingValuePost(userid, param, value, data.Count));
+        }
+
+        private static void SetUserSettingValuePost(int userid, string param, string value, int co)
+        {
+            if (co == 0)
+                db.QueryAsync("INSERT INTO `settings_values` (`user_id`, `param`, `value`) VALUES ({ARG}, '{ARG}', '{ARG}')", new List<string>([userid.ToString(), param, value]), null, true);
+            else
+                db.QueryAsync("UPDATE `settings_values` SET `value` = '{ARG}' WHERE `user_id` = {ARG} AND `param` = '{ARG}'", new List<string>([value, userid.ToString(), param]), null, true);
         }
 
         public static void Close()
@@ -97,7 +105,6 @@ namespace PlayerSettings
         }
 
         
-
-
     }
+
 }
