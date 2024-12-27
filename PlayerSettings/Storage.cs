@@ -74,7 +74,7 @@ namespace PlayerSettings
         }
 
         
-
+        /*
         public static string GetUserSettingValue(int userid, string param, string default_value)
         {
             var res = db.Query("SELECT `value` FROM `settings_values` WHERE `user_id` = {ARG} AND `param` = '{ARG}'", new List<string>([userid.ToString(), param]));
@@ -84,7 +84,7 @@ namespace PlayerSettings
                 return default_value;
             }
             return res[0][0];
-        }
+        }*/
 
         public static void SetUserSettingValue(int userid, string param, string value)
         {

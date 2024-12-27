@@ -66,7 +66,9 @@ namespace PlayerSettings
         {
             var user = FindUser(player);
 
-            Storage.LoadSettings(user.UserId(), (vars) => user.ParseLoadedSettings(vars, actions));
+            Task.Run(() => { while (user.UserId() == -1) Thread.Sleep(50); }).ContinueWith((_) =>
+                Storage.LoadSettings(user.UserId(), (vars) => user.ParseLoadedSettings(vars, actions))
+            );
         }
 
         public void RegisterTogglableSetting(string name, string viewName)

@@ -17,6 +17,7 @@ namespace PlayerSettings
         public CPlayerSettings(CCSPlayerController _player)
         {
             player = _player;
+            userid = -1;
             Storage.GetUserIdAsync(player, (userid) => this.userid = userid);
             cached_values = new Dictionary<string, string>();
         }
@@ -24,12 +25,12 @@ namespace PlayerSettings
         public string GetValue(string param, string default_value)
         {
             string value;
-            if(!cached_values.TryGetValue(param, out value))
-            {
-                value = Storage.GetUserSettingValue(userid, param, default_value);
+            if(!cached_values.TryGetValue(param, out value) || value == null)
+            {              
+                value = default_value;
                 cached_values[param] = value;
             }
-
+            
             return value;
         }
 

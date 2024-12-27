@@ -29,7 +29,7 @@ public class PlayerSettingsCore : BasePlugin, IPluginConfig<PluginConfig>
     }
 
     public override string ModuleName => "PlayerSettings [Core]";
-    public override string ModuleVersion => "0.8";
+    public override string ModuleVersion => "0.8.1";
     public override string ModuleAuthor => "Nick Fox";
     public override string ModuleDescription => "One storage for player's settings (aka ClientCookies)";
 
@@ -39,8 +39,11 @@ public class PlayerSettingsCore : BasePlugin, IPluginConfig<PluginConfig>
     {
         _api = new SettingsApi();
         Capabilities.RegisterPluginCapability(_pluginCapability, () => _api);
+        RegisterListener<Listeners.OnClientAuthorized>(OnClientAuthorized);
 
-        RegisterListener<Listeners.OnClientAuthorized>(OnClientAuthorized);        
+        if (hotReload)
+            foreach (var player in Utilities.GetPlayers())
+                OnClientAuthorized(player.Slot, player.AuthorizedSteamID);
     }
 
     public override void Unload(bool hotReload)
