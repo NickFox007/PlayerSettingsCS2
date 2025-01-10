@@ -21,7 +21,7 @@ namespace PlayerSettings
             Items.Add(new SettingItem(SettingType.Togglable, name, viewName));
         }
 
-        internal static void AddSelecting(string name, string viewName, List<string> values)
+        internal static void AddSelecting(string name, string viewName, Dictionary<string, string> values)
         {
             DeleteIfExist(name);
             Items.Add(new SettingItem(SettingType.Selecting, name, viewName, values));
@@ -33,7 +33,7 @@ namespace PlayerSettings
                 if (Items[i].Name == name)
                 {
                     Items.RemoveAt(i);
-                    break;
+                    i--;
                 }
         }
     }

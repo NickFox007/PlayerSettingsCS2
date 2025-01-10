@@ -10,10 +10,10 @@ namespace PlayerSettings
     {
         public string Name;
         public string ViewName;
-        public List<string> Values;
+        public Dictionary<string, string> Values;
         public SettingType Type;
 
-        public SettingItem(SettingType type, string name, string viewName, List<string> values = null)
+        public SettingItem(SettingType type, string name, string viewName, Dictionary<string, string> values = null)
         {
             if(type != SettingType.Togglable && values == null)
                 throw new ArgumentException("Non-togglable settings must have values");

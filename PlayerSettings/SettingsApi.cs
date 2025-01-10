@@ -76,7 +76,7 @@ namespace PlayerSettings
             SettingItems.AddTogglable(name, viewName);
         }
 
-        public void RegisterSelectingSetting(string name, string viewName, List<string> values)
+        public void RegisterSelectingSetting(string name, string viewName, Dictionary<string, string> values)
         {
             SettingItems.AddSelecting(name, viewName, values);
         }

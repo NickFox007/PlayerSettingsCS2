@@ -14,9 +14,9 @@ namespace PlayerSettings
         public void AddHook(Action<CCSPlayerController> action);
         public void RemHook(Action<CCSPlayerController> action);
 
-        // Coming soon...
-        //public void RegisterTogglableSetting(string name, string viewName);
-        //public void RegisterSelectingSetting(string name, string viewName, List<string> values);
-        //public List<SettingItem> GetSettingItems();
+        
+        public void RegisterTogglableSetting(string name, string viewName);
+        public void RegisterSelectingSetting(string name, string viewName, Dictionary<string, string> values);        
+        public List<SettingItem> GetSettingItems();
     }
 }

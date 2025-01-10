@@ -29,7 +29,7 @@ public class PlayerSettingsCore : BasePlugin, IPluginConfig<PluginConfig>
     }
 
     public override string ModuleName => "PlayerSettings [Core]";
-    public override string ModuleVersion => "0.8.1";
+    public override string ModuleVersion => "0.9";
     public override string ModuleAuthor => "Nick Fox";
     public override string ModuleDescription => "One storage for player's settings (aka ClientCookies)";
 
@@ -55,7 +55,6 @@ public class PlayerSettingsCore : BasePlugin, IPluginConfig<PluginConfig>
     {
         ((SettingsApi)_api).LoadOnConnect(Utilities.GetPlayerFromSlot(slot));
     }
-
 }
 
 public struct DatabaseParams
@@ -64,6 +63,7 @@ public struct DatabaseParams
     public string Name { get; set; }
     public string User { get; set; }
     public string Password { get; set; }
+    public string Table { get; set; }
 
     public DatabaseParams()
     {
@@ -71,9 +71,10 @@ public struct DatabaseParams
         Name = "";
         User = "";
         Password = "";
+        Table = "settings_";
     }
 
-    public bool IsDefault()
+    public bool IsLocal()
     {
         return (Host == "127.0.0.1:3306" && Name == "" && User == "" && Password == "") || Host == "";
     }
