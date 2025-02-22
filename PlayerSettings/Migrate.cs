@@ -20,7 +20,7 @@ namespace PlayerSettings
             sqlite.Set(AnyBaseLib.Bases.CommitMode.AutoCommit, Path.Combine(PlayerSettingsCore.plugin.ModuleDirectory, "settings"));
             sqlite.Init();
 
-            mysql.QueryAsync("SELECT COUNT(*) FROM `settings_users`", [], StartMigrate);
+            mysql.QueryAsync($"SELECT COUNT(*) FROM `{PlayerSettingsCore.plugin.Config.DatabaseParams.Table}users`", [], StartMigrate);
         }
 
 
@@ -34,7 +34,7 @@ namespace PlayerSettings
 
         private static void MigrateUsers()
         {
-            var res = sqlite.Query("SELECT `id`,`steam` FROM `settings_users`", []);
+            var res = sqlite.Query($"SELECT `id`,`steam` FROM `{PlayerSettingsCore.plugin.Config.DatabaseParams.Table}users`", []);
             if (res.Count == 0)
             {
                 Console.WriteLine("Nothing to migrate [users]");
@@ -48,7 +48,7 @@ namespace PlayerSettings
                 int count = 0;
                 foreach (var row in res)
                 {
-                    sql += "INSERT INTO `settings_users` (`id`,`steam`) VALUES ({ARG}, '{ARG}'); ";
+                    sql += "INSERT INTO `" + PlayerSettingsCore.plugin.Config.DatabaseParams.Table + "users` (`id`,`steam`) VALUES ({ARG}, '{ARG}'); ";
                     args.Add(row[0]);
                     args.Add(row[1]);
                     count++;
@@ -63,7 +63,7 @@ namespace PlayerSettings
 
         private static void MigrateSettings()
         {
-            var res = sqlite.Query("SELECT `user_id`,`param`,`value` FROM `settings_values`", []);
+            var res = sqlite.Query($"SELECT `user_id`,`param`,`value` FROM `{PlayerSettingsCore.plugin.Config.DatabaseParams.Table}values`", []);
             if (res.Count > 0)
             {
                 PlayerSettingsCore.plugin.Logger.LogInformation("Migrating settings...");
@@ -72,7 +72,7 @@ namespace PlayerSettings
                 int count = 0;
                 foreach (var row in res)
                 {
-                    sql += "INSERT INTO `settings_values` (`user_id`,`param`, `value`) VALUES ({ARG}, '{ARG}', '{ARG}'); ";
+                    sql += $"INSERT INTO `" + PlayerSettingsCore.plugin.Config.DatabaseParams.Table + "values` (`user_id`,`param`, `value`) VALUES ({ARG}, '{ARG}', '{ARG}'); ";
                     args.Add(row[0]);
                     args.Add(row[1]);
                     args.Add(row[2]);

@@ -16,6 +16,10 @@ namespace PlayerSettings
         public SettingsApi()
         {
             settings = Array.Empty<CPlayerSettings>();
+            if (actions == null)
+                actions = new List<Action<CCSPlayerController>>();
+            else
+                actions.Clear();
         }
 
         public void AddHook(Action<CCSPlayerController> action)

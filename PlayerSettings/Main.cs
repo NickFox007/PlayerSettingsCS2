@@ -29,7 +29,7 @@ public class PlayerSettingsCore : BasePlugin, IPluginConfig<PluginConfig>
     }
 
     public override string ModuleName => "PlayerSettings [Core]";
-    public override string ModuleVersion => "0.9";
+    public override string ModuleVersion => "0.9.1";
     public override string ModuleAuthor => "Nick Fox";
     public override string ModuleDescription => "One storage for player's settings (aka ClientCookies)";
 
