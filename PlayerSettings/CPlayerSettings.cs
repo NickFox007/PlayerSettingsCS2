@@ -52,12 +52,17 @@ namespace PlayerSettings
 
         internal void ParseLoadedSettings(List<List<string>> rows, List<Action<CCSPlayerController>> actions)
         {
-            foreach (var row in rows)
+            Task.Run(() =>
             {
-                cached_values[row[0]] = row[1];
-            }
-            foreach (var action in actions)
-                Server.NextFrameAsync(() => action(player));
+                foreach (var row in rows)
+                {
+                    cached_values[row[0]] = row[1];
+                }
+            }).ContinueWith((_) =>
+            {
+                foreach (var action in actions)
+                    Server.NextFrameAsync(() => action(player));
+            });
         }
 
     }

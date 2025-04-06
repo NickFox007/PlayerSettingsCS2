@@ -94,7 +94,6 @@ namespace PlayerSettings
             }
         }
 
-
         private static void Close()
         {
             sqlite.Close();

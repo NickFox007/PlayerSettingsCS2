@@ -42,31 +42,19 @@ namespace PlayerSettings
 
             
         }
-        /*
-        public static int GetUserId(CCSPlayerController player)
-        {
-            var steamid = player.SteamID;
-            var res = db.Query("select \"id\" from \"settings_users\" where \"steam\" = \"{ARG}\"", new List<string>([steamid.ToString()]));
-            if(res.Count == 0)
-            {
-                db.Query("insert into \"settings_users\" (\"steam\") values (\"{ARG}\")", new List<string>([steamid.ToString()]), true);
-                res = db.Query("select \"id\" from \"settings_users\" where \"steam\" = \"{ARG}\"", new List<string>([steamid.ToString()]));
-            }
-            return int.Parse(res[0][0]);
-        }*/
 
         public static void GetUserIdAsync(CCSPlayerController player, Action<int> callback)
         {
             var steamid = player.SteamID;
-            db.QueryAsync("SELECT `id` FROM `" + table + "users` WHERE `steam` = '{ARG}'", new List<string>([steamid.ToString()]), (data) => {
+            db.QueryAsync("SELECT `id` FROM `" + table + "users` WHERE `steam` = '{ARG}'", new List<string>([steamid.ToString()]), (data) =>
+            {
                 if (data.Count > 0)
                 {
                     callback(int.Parse(data[0][0]));
                 }
-                else
-                    db.QueryAsync("INSERT INTO `" + table + "users` (`steam`) VALUES ('{ARG}')", new List<string>([steamid.ToString()]), (data) => GetUserIdAsync(player, callback), true);
+                else                
+                    db.QueryAsync("INSERT INTO `" + table + "users` (`steam`) VALUES ('{ARG}'); SELECT `id` FROM `" + table + "users` WHERE `steam` = '{ARG}'", new List<string>([steamid.ToString(), steamid.ToString()]), (data) => callback(int.Parse(data[0][0])));
             });
-            
             
         }
 
@@ -103,9 +91,9 @@ namespace PlayerSettings
 
         public static void Close()
         {
-            db.Close();
+            if(db != null)
+                db.Close();
         }
-
         
     }
 

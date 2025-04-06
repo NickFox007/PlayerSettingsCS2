@@ -70,7 +70,7 @@ namespace PlayerSettings
         {
             var user = FindUser(player);
 
-            Task.Run(() => { while (user.UserId() == -1) Thread.Sleep(50); }).ContinueWith((_) =>
+            Task.Run(() => { while (user.UserId() == -1) Task.Delay(50).Wait(); }).ContinueWith((_) =>
                 Storage.LoadSettings(user.UserId(), (vars) => user.ParseLoadedSettings(vars, actions))
             );
         }
