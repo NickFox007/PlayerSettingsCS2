@@ -40,6 +40,7 @@ public class PlayerSettingsCore : BasePlugin, IPluginConfig<PluginConfig>
         _api = new SettingsApi();
         Capabilities.RegisterPluginCapability(_pluginCapability, () => _api);
         RegisterListener<Listeners.OnClientAuthorized>(OnClientAuthorized);
+        RegisterListener<Listeners.OnClientDisconnect>(OnClientDisconnect);
 
         if (hotReload)
             foreach (var player in Utilities.GetPlayers())
@@ -54,6 +55,11 @@ public class PlayerSettingsCore : BasePlugin, IPluginConfig<PluginConfig>
     private void OnClientAuthorized(int slot, SteamID steamID)
     {
         ((SettingsApi)_api).LoadOnConnect(Utilities.GetPlayerFromSlot(slot));
+    }
+
+    private void OnClientDisconnect(int slot)
+    {
+        ((SettingsApi)_api).RemovePlayer(slot);
     }
 }
 
