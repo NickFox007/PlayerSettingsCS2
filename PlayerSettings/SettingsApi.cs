@@ -11,15 +11,16 @@ namespace PlayerSettings
     
     internal class SettingsApi : ISettingsApi
     {
-        private CPlayerSettings[] settings;
+        private readonly Dictionary<int, CPlayerSettings> settingsBySlot;
         internal List<Action<CCSPlayerController>> actions = new List<Action<CCSPlayerController>>();
         public SettingsApi()
         {
-            settings = Array.Empty<CPlayerSettings>();
+            settingsBySlot = new Dictionary<int, CPlayerSettings>();
             if (actions == null)
                 actions = new List<Action<CCSPlayerController>>();
             else
                 actions.Clear();
+            SettingItems.Init();
         }
 
         public void AddHook(Action<CCSPlayerController> action)
@@ -34,26 +35,21 @@ namespace PlayerSettings
 
         private CPlayerSettings FindUser(CCSPlayerController player)
         {
-            foreach (var item in this.settings)
+            if (settingsBySlot.TryGetValue(player.Slot, out var existing))
             {
-                if (item.EqualPlayer(player))
-                {
-                    //Console.WriteLine($"Returned found: {item.UserId()}");
-                    return item;
-                }
+                if (existing.EqualPlayer(player))
+                    return existing;
             }
-            
+
             var newInst = new CPlayerSettings(player);
-            AddPlayerInst(newInst);
+            settingsBySlot[player.Slot] = newInst;
             return newInst;
         }
 
-        private void AddPlayerInst(CPlayerSettings inst)
+        internal void RemovePlayer(int slot)
         {
-            Array.Resize(ref settings, settings.Length + 1);
-            settings[settings.Length - 1] = inst;
+            settingsBySlot.Remove(slot);
         }
-
 
         public string GetPlayerSettingsValue(CCSPlayerController player, string param, string default_value)
         {            
@@ -69,10 +65,13 @@ namespace PlayerSettings
         internal void LoadOnConnect(CCSPlayerController player)
         {
             var user = FindUser(player);
+            _ = LoadOnConnectAsync(user);
+        }
 
-            Task.Run(() => { while (user.UserId() == -1) Task.Delay(50).Wait(); }).ContinueWith((_) =>
-                Storage.LoadSettings(user.UserId(), (vars) => user.ParseLoadedSettings(vars, actions))
-            );
+        private async Task LoadOnConnectAsync(CPlayerSettings user)
+        {
+            await user.WaitForUserIdAsync().ConfigureAwait(false);
+            Storage.LoadSettings(user.UserId(), (vars) => user.ParseLoadedSettings(vars, actions));
         }
 
         public void RegisterTogglableSetting(string name, string viewName)
